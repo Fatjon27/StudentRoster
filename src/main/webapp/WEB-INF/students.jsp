@@ -45,7 +45,7 @@
             <tbody>
                 <c:forEach items="${dorm.students}" var="student">
                     <tr>
-                            <td><c:out value="${student.name}"/></td>
+                            <td><a href="/students/${student.id}"><c:out value="${student.name}"/></a></td>
                             <td>
                                 <form:form action="/delete/${dorm.id}/${student.id}" method="delete">
                                     <input type="submit" value="Remove">

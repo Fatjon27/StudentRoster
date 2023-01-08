@@ -1,5 +1,6 @@
 package com.codingdojo.betaplan.studentroster.services;
 
+import com.codingdojo.betaplan.studentroster.models.Class;
 import com.codingdojo.betaplan.studentroster.models.Student;
 import com.codingdojo.betaplan.studentroster.repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,4 +34,11 @@ public class StudentService {
     public void deleteById(Long id) {
         studentRepository.deleteById(id);
     }
+    public List<Student> findStudentsInAClass(Class newClass){
+        return studentRepository.findAllByClasses(newClass);
+    }
+    public List<Student> findStudentsNotInAClass(Class newClass){
+        return studentRepository.findByClassesNotContains(newClass);
+    }
+
 }

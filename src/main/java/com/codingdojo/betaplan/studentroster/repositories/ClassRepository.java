@@ -8,9 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StudentRepository extends CrudRepository<Student,Long> {
-     List<Student> findAll();
-     List<Student> findAllByClasses(Class newClass);
-     List<Student> findByClassesNotContains(Class newClass);
-
+public interface ClassRepository extends CrudRepository<Class,Long> {
+    List<Class> findAll();
+    List<Class> findAllByStudents(Student student);
+    List<Class> findByStudentsNotContains(Student student);
 }

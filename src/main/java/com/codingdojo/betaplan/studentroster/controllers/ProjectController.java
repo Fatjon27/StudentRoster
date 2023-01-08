@@ -1,11 +1,14 @@
 package com.codingdojo.betaplan.studentroster.controllers;
 
+import com.codingdojo.betaplan.studentroster.models.Class;
 import com.codingdojo.betaplan.studentroster.models.Dorm;
 import com.codingdojo.betaplan.studentroster.models.Student;
+import com.codingdojo.betaplan.studentroster.services.ClassService;
 import com.codingdojo.betaplan.studentroster.services.DormService;
 import com.codingdojo.betaplan.studentroster.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,8 @@ public class ProjectController {
     private DormService dormService;
     @Autowired
     private StudentService studentService;
+    @Autowired
+    private ClassService classService;
 
     @GetMapping("/")
     public String main(){
@@ -79,5 +84,60 @@ public class ProjectController {
     public String delete(@PathVariable("student_id")Long id){
         studentService.deleteById(id);
         return "redirect:/dorms" ;
+    }
+
+    @GetMapping("/classes/new")
+    public String newClass(@ModelAttribute("newClass") Class newClass){
+        return "createClass";
+    }
+    @PostMapping("/classes/new")
+    public String createClass(@Valid @ModelAttribute("newClass") Class newClass,BindingResult result){
+        if(result.hasErrors()){
+            return "createClass";
+        }
+        else {
+            classService.create(newClass) ;
+            return "redirect:/";
+        }
+    }
+
+    @GetMapping("/classes")
+    public String classes(Model model){
+        model.addAttribute("allClasses",classService.findAll());
+        return "classes";
+    }
+
+    @GetMapping("/classes/{id}")
+    public String classStudents(@PathVariable("id") Long id,Model model){
+        Class currentClass = classService.findById(id);
+        model.addAttribute("currentClass",currentClass);
+        model.addAttribute("students",currentClass.getStudents());
+        return "currentClass";
+    }
+
+    @GetMapping("students/{id}")
+    public String studentClasses(@PathVariable("id")Long id,Model model){
+        Student student = studentService.findById(id);
+        model.addAttribute("student",student);
+        model.addAttribute("classes",classService.findClassesContainingStudent(student));
+        model.addAttribute("leftClasses",classService.findClassesNotContainingStudent(student));
+        return "studentClasses";
+    }
+    @PostMapping("/students/{id}")
+    public String studentClass(@PathVariable("id") Long studentId, @RequestParam(value = "classId")Long classId){
+        Student student =studentService.findById(studentId);
+        Class currentClass = classService.findById(classId);
+        student.getClasses().add(currentClass);
+        studentService.update(student);
+        return "redirect:/students/"+studentId;
+    }
+
+    @GetMapping("/drop/{id}/{classId}")
+    public String drop(@PathVariable("id") Long id,@PathVariable("classId") Long classId,Model model){
+        Class currentClass = classService.findById(classId);
+        Student student = studentService.findById(id);
+        student.getClasses().remove(currentClass);
+        studentService.update(student);
+        return "redirect:/students/"+id;
     }
 }

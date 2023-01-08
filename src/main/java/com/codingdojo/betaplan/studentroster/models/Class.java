@@ -1,28 +1,30 @@
 package com.codingdojo.betaplan.studentroster.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "students")
-public class Student {
+@Table(name = "classes")
+public class Class {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty
     private String name;
     @Column(updatable = false)
     private Date createdAt;
     private Date updatedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dorm_id")
-    private Dorm dorm;
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "students_classes",
-               joinColumns = @JoinColumn(name = "student_id"),
-               inverseJoinColumns = @JoinColumn(name = "class_id"))
-    private List<Class> classes;
-    public Student() {
+    @JoinTable( name = "students_classes",
+                joinColumns = @JoinColumn(name = "class_id"),
+                inverseJoinColumns = @JoinColumn(name = "student_id"))
+    private List<Student> students;
+    public Class(){
+    }
+    public Class(String name){
+        this.name=name;
     }
 
     public Long getId() {
@@ -49,29 +51,19 @@ public class Student {
         return updatedAt;
     }
 
-    public Dorm getDorm() {
-        return dorm;
+    public List<Student> getStudents() {
+        return students;
     }
 
-    public void setDorm(Dorm dorm) {
-        this.dorm = dorm;
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
-
     @PrePersist
     protected void onCreate(){
         this.createdAt=new Date();
     }
-
     @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt= new Date();
-    }
-
-    public List<Class> getClasses() {
-        return classes;
-    }
-
-    public void setClasses(List<Class> classes) {
-        this.classes = classes;
+    protected void onUpdate(){
+        this.updatedAt=new Date();
     }
 }

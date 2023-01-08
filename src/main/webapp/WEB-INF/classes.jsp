@@ -11,34 +11,27 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Dorms</title>
+    <title>All Classes</title>
     <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/main.css"> <!-- change to match your file/naming structure -->
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1 class="text-md-center">Dorms</h1>
-    <a href="/dorms/new" class="text-center">Add a new dorm</a>
+    <h1>All Classes</h1>
     <hr>
-    <a href="/students/new" class="text-center">Add a new student</a>
-    <hr>
-    <a href="/classes/new" class="text-center">Add a new class</a>
-    <hr>
-    <a href="/classes">View all classes</a>
+    <a href="/">Dashboard</a>
     <hr>
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>Dorm</th>
-                <th>Action</th>
+                <th class="col">Class</th>
             </tr>
         </thead>
         <tbody>
-            <c:forEach items="${allDorms}" var="currentDorm">
+            <c:forEach items="${allClasses}" var="currClass">
                 <tr>
-                    <td><c:out value="${currentDorm.name}"/></td>
-                    <td><a href="/dorms/${currentDorm.id}">See Students</a></td>
+                    <td><a href="/classes/${currClass.id}"><c:out value="${currClass.name}"/></a></td>
                 </tr>
             </c:forEach>
         </tbody>
